@@ -1,0 +1,76 @@
+{
+  "name": "defrag",
+  "description": "defragment dependencies in your monorepo",
+  "version": "1.0.0",
+  "type": "module",
+  "license": "MIT",
+  "preset": "index.js",
+  "author": "NullVoxPopuli",
+  "repository": {
+    "url": "https://github.com/NullVoxPopuli/defrag",
+    "type": "https"
+  },
+  "keywords": [
+    "defrag",
+    "dependencies",
+    "deps",
+    "fix",
+    "defragmentation"
+  ],
+  "bin": {
+    "defrag-dependencies": "./bin.js"
+  },
+  "exports": {
+    "import": "./src/index.js"
+  },
+  "files": [
+    "index.js",
+    "src/**",
+    "bin.js"
+  ],
+  "scripts": {
+    "lint:types": "tsc --noEmit",
+    "build": "tsc --build",
+    "lint": "eslint . && prettier . --check",
+    "lint:fix": "eslint . --fix && prettier . --write",
+    "test": "vitest --coverage --no-watch",
+    "test:watch": "vitest --watch"
+  },
+  "dependencies": {
+    "@manypkg/get-packages": "^2.2.0",
+    "cosmiconfig": "^9.0.0",
+    "debug": "^4.3.4",
+    "ember-apply": "^2.11.1",
+    "latest-version": "^7.0.0",
+    "minimatch": "^9.0.3",
+    "semver": "^7.5.4"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.23.3",
+    "@nullvoxpopuli/eslint-configs": "^3.2.2",
+    "@tsconfig/node20": "^20.1.2",
+    "@tsconfig/strictest": "^2.0.2",
+    "@types/debug": "^4.1.12",
+    "@types/semver": "^7.5.5",
+    "@typescript-eslint/eslint-plugin": "^6.11.0",
+    "@typescript-eslint/parser": "^6.11.0",
+    "@vitest/coverage-c8": "^0.33.0",
+    "@vitest/coverage-v8": "^0.34.6",
+    "c8": "^8.0.1",
+    "eslint": "^8.54.0",
+    "eslint-plugin-decorator-position": "^5.0.2",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "prettier": "^3.1.0",
+    "typescript": "5.3.3",
+    "vite": "^5.0.0",
+    "vitest": "^0.34.6"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "volta": {
+    "node": "18.19.0"
+  }
+}
