@@ -134,6 +134,22 @@ describe('getVersionForConfig', () => {
       ]),
     ).toBe('5.4.0-beta.1');
   });
+
+  it('restricted to ~', () => {
+    const verify = withConfig(
+      c({
+        'write-as': 'pinned',
+        'update-range': {
+          '~': ['ember-data'],
+          '^': [],
+        },
+      }),
+    );
+
+    expect(
+      verify('ember-data', '^5.3.0', ['^4.12.5', '^5.4.0', '^5.3.0', '^5.3.1']),
+    ).toBe('5.3.1');
+  });
 });
 
 describe('getNearest', () => {

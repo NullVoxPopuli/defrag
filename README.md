@@ -13,10 +13,10 @@ npx defrag
 ```
 
 or debug with
+
 ```bash
 DEBUG=defrag npx defrag
 ```
-
 
 ## Config
 
