@@ -18,6 +18,19 @@ or debug with
 DEBUG=defrag npx defrag
 ```
 
+## Erroring in C.I.
+
+In GitHub Actions 
+```yaml
+ensure-no-divergence:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v4
+    - run: npx defrag
+    - run: git diff --exit-code
+```
+No need to install dependencies for your monorepo to have this verification
+
 ## Config
 
 Example `.defragrc.yaml`
