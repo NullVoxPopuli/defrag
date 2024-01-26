@@ -26,6 +26,6 @@ jobs:
     needs: [install_dependencies]
 
     steps:
-    - uses: wyvox/action@v1
-    - name: Tests
-      run: pnpm test
+      - uses: wyvox/action@v1
+      - name: Tests
+        run: pnpm test
