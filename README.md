@@ -9,8 +9,14 @@ This will sync all the versions in your monorepo to the same version, _within_ t
 Run in the root of your monorepo
 
 ```bash
-defrag-dependencies
+npx defrag
 ```
+
+or debug with
+```bash
+DEBUG=defrag npx defrag
+```
+
 
 ## Config
 
