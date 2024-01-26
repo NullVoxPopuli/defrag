@@ -1,7 +1,4 @@
 // @ts-check
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
 import { getPackages } from '@manypkg/get-packages';
 import { cosmiconfig } from 'cosmiconfig';
 import debug from 'debug';
@@ -26,7 +23,7 @@ export default async function run() {
    * @type {import('./types.ts').Config}
    */
   const config = {
-    'write-as': 'semver',
+    'write-as': 'pinned',
     ...(configResult?.config || {}),
   };
 
@@ -49,16 +46,19 @@ export default async function run() {
   d(`Found ${paths.length} paths`);
 
   for (let projectPath of paths) {
+    if (!projectPath) continue;
+
+    d(`Updating ${projectPath.replace(root, '')}`);
+
     await packageJson.modify((manifest) => {
       updateManifestFor(manifest.devDependencies, config);
       updateManifestFor(manifest.dependencies, config);
+      // npm
+      updateManifestFor(manifest.overrides, config);
+      // yarn
+      updateManifestFor(manifest.resolutions, config);
+      // pnpm
       updateManifestFor(manifest.pnpm?.overrides, config);
     }, projectPath);
   }
 }
-
-// @ts-ignore
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-run.path = __dirname;
-run.type = 'tool';

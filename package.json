@@ -1,7 +1,7 @@
 {
   "name": "defrag",
   "description": "defragment dependencies in your monorepo",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "type": "module",
   "license": "MIT",
   "preset": "index.js",
@@ -18,6 +18,7 @@
     "defragmentation"
   ],
   "bin": {
+    "defrag": "./bin.js",
     "defrag-dependencies": "./bin.js"
   },
   "exports": {
