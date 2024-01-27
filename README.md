@@ -20,7 +20,8 @@ DEBUG=defrag npx defrag
 
 ## Erroring in C.I.
 
-In GitHub Actions 
+In GitHub Actions
+
 ```yaml
 ensure-no-divergence:
   runs-on: ubuntu-latest
@@ -29,6 +30,7 @@ ensure-no-divergence:
     - run: npx defrag
     - run: git diff --exit-code
 ```
+
 No need to install dependencies for your monorepo to have this verification
 
 ## Config

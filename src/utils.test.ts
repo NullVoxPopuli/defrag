@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { describe, expect as e, it } from 'vitest';
 
+import { c } from './-tests/helpers.ts';
 import {
   getNearest,
   getVersionForConfig,
@@ -8,21 +9,7 @@ import {
   toWrittenVersion,
 } from './utils.js';
 
-import type { Config } from './types.js';
-
 const expect = e.soft;
-
-function c(overrides: Partial<Config> = {}): Config {
-  return {
-    'write-as': 'pinned' as const,
-    ...overrides,
-    'update-range': {
-      '~': [],
-      '^': [],
-      ...overrides['update-range'],
-    },
-  };
-}
 
 describe('toWrittenVersion', () => {
   it('errors on invalid "write-as" config', () => {
@@ -65,6 +52,9 @@ describe('toWrittenVersion', () => {
     expect(toWrittenVersion('^1.0.0', config)).toBe('1.0.0');
     expect(toWrittenVersion('~1.0.0', config)).toBe('1.0.0');
     expect(toWrittenVersion('~1.0.0-security', config)).toBe('1.0.0-security');
+
+    // invalid versions that try to have a range
+    expect(toWrittenVersion('^1.0.x', config)).toBe('1.0.0');
   });
 
   it('minors', () => {
