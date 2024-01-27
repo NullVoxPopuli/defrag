@@ -84,7 +84,7 @@ for each workspace
 
 ### How is this different from dedupe?
 
-this gives you more control over _what_ dedupes, based on ranges in a configured `.defragrc.yaml`.
+Dedupe operates on the lockfile, only and `defrag` gives you more control over _what_ dedupes, based on ranges in a configured `.defragrc.yaml`.
 additionally, this tool gives the ability to `pin` versions, whereas dedupe would use whatever resolved dependency version satisfies the pre-existing `^` range.
 
 ### Can this break my lockfile? 
