@@ -1,6 +1,6 @@
 # Defrag
 
-De-fragment the dependencies your monorepo.
+De-fragment the dependencies your monorepo, reducing the number of copies of in-range dependencies 
 
 This will sync all the versions in your monorepo to the same version, _within_ the configured range.
 
@@ -61,3 +61,18 @@ update-range:
     - ember-data
     - "@ember-data/*"
 ```
+
+## What does this do?
+
+
+The algorithm is this:
+```
+scan all workspaces,
+  find the dependencies, adding their versions to a list
+for each workspace
+  for each dependency
+    re-assign an in-range version to the highest the monorepo was already using
+```
+- reduces lockfile size
+- reduces duplicate depenedncies
+- allows package managers that "hoist" dependencies to be likely more correct
