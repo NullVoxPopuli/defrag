@@ -87,15 +87,15 @@ function isNonVersion(version) {
  *
  * @param {string} version
  */
-function clean(version) {
-  let coerced = semver.coerce(version);
+export function clean(version) {
+  let coerced = semver.coerce(version, { loose: true });
 
   if (!coerced) {
     return version;
   }
 
   let [, tail] = version.split(`${coerced}`);
-  let rebuilt = `${coerced}${tail}`;
+  let rebuilt = `${coerced}${tail || ''}`;
 
   return rebuilt;
 }
