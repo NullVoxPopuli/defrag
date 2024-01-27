@@ -1,15 +1,7 @@
 {
   "name": "defrag",
-  "description": "defragment dependencies in your monorepo",
   "version": "1.0.2",
-  "type": "module",
-  "license": "MIT",
-  "preset": "index.js",
-  "author": "NullVoxPopuli",
-  "repository": {
-    "url": "https://github.com/NullVoxPopuli/defrag",
-    "type": "https"
-  },
+  "description": "defragment dependencies in your monorepo",
   "keywords": [
     "defrag",
     "dependencies",
@@ -17,12 +9,19 @@
     "fix",
     "defragmentation"
   ],
+  "repository": {
+    "type": "https",
+    "url": "https://github.com/NullVoxPopuli/defrag"
+  },
+  "license": "MIT",
+  "author": "NullVoxPopuli",
+  "type": "module",
+  "exports": {
+    "import": "./src/index.js"
+  },
   "bin": {
     "defrag": "./bin.js",
     "defrag-dependencies": "./bin.js"
-  },
-  "exports": {
-    "import": "./src/index.js"
   },
   "files": [
     "index.js",
@@ -30,10 +29,10 @@
     "bin.js"
   ],
   "scripts": {
-    "lint:types": "tsc --noEmit",
     "build": "tsc --build",
     "lint": "eslint . && prettier . --check",
     "lint:fix": "eslint . --fix && prettier . --write",
+    "lint:types": "tsc --noEmit",
     "test": "vitest --coverage --no-watch",
     "test:watch": "vitest --watch"
   },
@@ -64,6 +63,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^5.0.1",
     "prettier": "^3.1.0",
+    "release-plan": "^0.6.0",
     "typescript": "5.3.3",
     "vite": "^5.0.0",
     "vitest": "^0.34.6"
@@ -73,5 +73,6 @@
   },
   "volta": {
     "node": "18.19.0"
-  }
+  },
+  "preset": "index.js"
 }
