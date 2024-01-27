@@ -4,6 +4,8 @@ De-fragment the dependencies your monorepo, reducing the number of copies of in-
 
 This will sync all the versions in your monorepo to the same version, _within_ the configured range.
 
+**Works with all package-managers (pnpm, yarn, npm, etc)**
+
 ## Usage
 
 Run in the root of your monorepo
