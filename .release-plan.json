@@ -1,0 +1,25 @@
+{
+  "solution": {
+    "defrag": {
+      "impact": "patch",
+      "oldVersion": "1.0.2",
+      "newVersion": "1.0.3",
+      "constraints": [
+        {
+          "impact": "patch",
+          "reason": "Appears in changelog section :bug: Bug Fix"
+        },
+        {
+          "impact": "patch",
+          "reason": "Appears in changelog section :memo: Documentation"
+        },
+        {
+          "impact": "patch",
+          "reason": "Appears in changelog section :house: Internal"
+        }
+      ],
+      "pkgJSONPath": "./package.json"
+    }
+  },
+  "description": "## Release (2024-01-27)\n\ndefrag 1.0.3 (patch)\n\n#### :bug: Bug Fix\n* `defrag`\n  * [#1](https://github.com/NullVoxPopuli/defrag/pull/1) Fix issue with invalid versions ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n\n#### :memo: Documentation\n* `defrag`\n  * [#4](https://github.com/NullVoxPopuli/defrag/pull/4) Clarify vs dedupe ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n\n#### :house: Internal\n* `defrag`\n  * [#2](https://github.com/NullVoxPopuli/defrag/pull/2) Setup release plan ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n\n#### Committers: 1\n- [@NullVoxPopuli](https://github.com/NullVoxPopuli)\n"
+}
