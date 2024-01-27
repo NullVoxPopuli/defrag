@@ -1,6 +1,6 @@
 {
   "name": "defrag",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "defragment dependencies in your monorepo",
   "keywords": [
     "defrag",
