@@ -69,7 +69,7 @@ update-range:
 
 The algorithm is this:
 ```
-scan all workspaces,
+scan all workspaces' package.json,
   find the dependencies, adding their versions to a list
 for each workspace
   for each dependency
