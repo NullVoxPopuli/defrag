@@ -64,8 +64,9 @@ update-range:
     - "@ember-data/*"
 ```
 
-## What does this do?
+## Questions
 
+### What does this do?
 
 The algorithm is this:
 ```
@@ -78,3 +79,12 @@ for each workspace
 - reduces lockfile size
 - reduces duplicate depenedncies
 - allows package managers that "hoist" dependencies to be likely more correct
+
+### How is this different from dedupe?
+
+this gives you more control over _what_ dedupes, based on ranges in a configured `.defragrc.yaml`.
+additionally, this tool gives the ability to `pin` versions, whereas dedupe would use whatever resolved dependency version satisfies the pre-existing `^` range.
+
+### Can this break my lockfile? 
+
+If a package.json using a version format that isn't actually a version (and not yet accounted for), this is likely a bug -- the desired behavior is to ignore invalid versions and opt them out of being changed by this tool.
