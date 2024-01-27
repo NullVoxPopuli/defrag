@@ -10,7 +10,6 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
-    needs: [install_dependencies]
 
     steps:
       - uses: wyvox/action@v1
@@ -23,7 +22,6 @@ jobs:
         platform: [ubuntu-latest]
     name: "Tests"
     runs-on: "${{ matrix.platform }}"
-    needs: [install_dependencies]
 
     steps:
       - uses: wyvox/action@v1
