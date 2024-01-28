@@ -87,6 +87,15 @@ update-range:
 
 ## Questions
 
+### Disable for sub-folders?
+
+```yaml
+overrides:
+  - path: packages/**/*
+    devDependencies: false
+    dependencies: false 
+```
+
 ### What does this do?
 
 The algorithm is this:
