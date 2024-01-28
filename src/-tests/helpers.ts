@@ -1,13 +1,7 @@
-import type { Config } from '../types.js';
+import { normalizeConfig } from '../config.js';
 
-export function c(overrides: Partial<Config> = {}): Config {
-  return {
-    'write-as': 'pinned' as const,
-    ...overrides,
-    'update-range': {
-      '~': [],
-      '^': [],
-      ...overrides['update-range'],
-    },
-  };
+import type { Config, UserConfig } from '../types.js';
+
+export function c(userConfig: UserConfig = {}): Config {
+  return normalizeConfig(userConfig);
 }

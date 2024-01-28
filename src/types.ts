@@ -4,6 +4,8 @@ export type Manifest = Package['packageJson'];
 
 type Range = 'pinned' | 'minors' | 'patches';
 
+export type ConfigForUpdate = Pick<Config, 'write-as' | 'update-range'>;
+
 export interface Config {
   'write-as': Range;
   'update-range': {
@@ -16,9 +18,8 @@ export interface Config {
     path: string[];
     devDependencies: Range | false;
     dependencies: Range | false;
-  }[]
+  }[];
 }
-
 
 export interface UserConfig {
   'write-as'?: Range;
@@ -30,5 +31,5 @@ export interface UserConfig {
     path: string | string[];
     devDependencies?: Range | false;
     dependencies?: Range | false;
-  }[]
+  }[];
 }

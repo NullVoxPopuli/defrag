@@ -1,6 +1,6 @@
 import { describe, expect as e, it } from 'vitest';
 
-import { normalizeConfig } from './utils.js';
+import { normalizeConfig } from './config.js';
 
 const expect = e.soft;
 
@@ -19,7 +19,7 @@ describe('normalizeConfig', () => {
   });
 
   it('overrides "write-as"', () => {
-    expect(normalizeConfig({ 'write-as': "minors" })).toMatchInlineSnapshot(`
+    expect(normalizeConfig({ 'write-as': 'minors' })).toMatchInlineSnapshot(`
       {
         "overrides": [],
         "update-range": {
@@ -32,15 +32,17 @@ describe('normalizeConfig', () => {
   });
 
   it('specifies overrides', () => {
-    expect(normalizeConfig({
-      overrides: [
-        {
-          path: 'x/y/z',
-          devDependencies: false,
-          dependencies: false,
-        }
-      ]
-    })).toMatchInlineSnapshot(`
+    expect(
+      normalizeConfig({
+        overrides: [
+          {
+            path: 'x/y/z',
+            devDependencies: false,
+            dependencies: false,
+          },
+        ],
+      }),
+    ).toMatchInlineSnapshot(`
       {
         "overrides": [
           {
@@ -61,16 +63,14 @@ describe('normalizeConfig', () => {
   });
 
   it('specifies update-range', () => {
-    expect(normalizeConfig({
-      'update-range': {
-        '~': [
-          'ember-data',
-        ],
-        '^': [
-          '@ember-data/*'
-        ],
-      }
-    })).toMatchInlineSnapshot(`
+    expect(
+      normalizeConfig({
+        'update-range': {
+          '~': ['ember-data'],
+          '^': ['@ember-data/*'],
+        },
+      }),
+    ).toMatchInlineSnapshot(`
       {
         "overrides": [],
         "update-range": {
