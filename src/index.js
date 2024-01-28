@@ -4,6 +4,7 @@ import { cosmiconfig } from 'cosmiconfig';
 import debug from 'debug';
 import { packageJson, project } from 'ember-apply';
 
+import { getOverride, normalizeConfig } from './config.js';
 import { injestDeps, updateManifestFor } from './utils.js';
 
 const d = debug('defrag');
@@ -20,45 +21,70 @@ export default async function run() {
   const projectResult = await getPackages(root);
 
   /**
-   * @type {import('./types.ts').Config}
+   * @type {import('./types.ts').UserConfig}
    */
-  const config = {
-    'write-as': 'pinned',
-    ...(configResult?.config || {}),
-  };
+  const userConfig = configResult?.config || {};
+  const config = normalizeConfig(userConfig);
 
   d(`Resolved config:`);
   d(config);
 
-  let manifests = [
-    projectResult.rootPackage?.packageJson,
-    ...projectResult.packages.map((p) => p.packageJson),
-  ].filter(Boolean);
+  let packages = [projectResult.rootPackage, ...projectResult.packages].filter(
+    Boolean,
+  );
 
-  d(`Found ${manifests.length} packages`);
-  manifests.forEach((p) => p && injestDeps(p));
+  d(`Found ${packages.length} packages`);
+  packages.forEach((p) => p && injestDeps(p.packageJson));
 
-  let paths = [
-    projectResult.rootPackage?.dir,
-    ...projectResult.packages.map((p) => p.dir),
-  ].filter(Boolean);
+  for (const pkg of packages) {
+    if (!pkg) continue;
 
-  d(`Found ${paths.length} paths`);
-
-  for (let projectPath of paths) {
-    if (!projectPath) continue;
-
-    d(`Updating ${projectPath.replace(root, '')}`);
+    d(`Updating ${pkg.relativeDir}`);
 
     await packageJson.modify((manifest) => {
-      updateManifestFor(manifest.devDependencies, config);
-      updateManifestFor(manifest.dependencies, config);
+      // These have configurable overrides in .defragrc.yml
+      update(manifest, pkg.relativeDir, config, 'devDependencies');
+      update(manifest, pkg.relativeDir, config, 'dependencies');
+
+      // These don't have configurable overrides as they
+      // *are* the overrides for the whole repo
+      // (or in some cases a single workspace)
+      // In any case, they only affect local development,
+      // and not versions used by a consumer in a published package.
+      //
       // npm
       updateManifestFor(manifest.overrides, config);
       // yarn
       updateManifestFor(manifest.resolutions, config);
       // pnpm
       updateManifestFor(manifest.pnpm?.overrides, config);
-    }, projectPath);
+    }, pkg.dir);
   }
+}
+
+/**
+ * @param {Record<string, any>} manifest
+ * @param {string} relativePath
+ * @param {import('./types.ts').Config} config
+ * @param {'devDependencies' | 'dependencies'} collection
+ */
+function update(manifest, relativePath, config, collection) {
+  let override = getOverride(relativePath, config);
+
+  if (!override) {
+    return updateManifestFor(manifest[collection], config);
+  }
+
+  let collectionConfig = override[collection];
+
+  if (collectionConfig === false) {
+    return;
+  }
+
+  let writeAs = collectionConfig ?? config['write-as'];
+
+  updateManifestFor(manifest[collection], {
+    'write-as': writeAs,
+    'update-range': config['update-range'],
+  });
 }

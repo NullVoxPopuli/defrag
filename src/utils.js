@@ -20,8 +20,8 @@ export function setDetectedDeps(name, list) {
 
 /**
  *
- * @param {Record<string, string>} depSet
- * @param {import('./types.ts').Config} config
+ * @param {Record<string, string> | undefined} depSet
+ * @param {import('./types.ts').ConfigForUpdate} config
  */
 export function updateManifestFor(depSet, config) {
   if (depSet) {
@@ -37,7 +37,7 @@ export function updateManifestFor(depSet, config) {
  *
  * @param {string} dep
  * @param {string} currentVersion
- * @param {import('./types.ts').Config} config
+ * @param {import('./types.ts').ConfigForUpdate} config
  */
 export function getVersionForConfig(dep, currentVersion, config) {
   let versions = DEPS.get(dep);
@@ -103,7 +103,7 @@ export function clean(version) {
 /**
  *
  * @param {string} version
- * @param {import('./types.ts').Config} config
+ * @param {import('./types.ts').ConfigForUpdate} config
  */
 export function toWrittenVersion(version, config) {
   if (isNonVersion(version)) {
@@ -150,7 +150,7 @@ export function getNearest(current, { versions, strategy }) {
 /**
  *
  * @param {string} dep
- * @param {import('./types.ts').Config} config
+ * @param {import('./types.ts').ConfigForUpdate} config
  * @returns {'^' | '~'}
  */
 export function getBumpStrategy(dep, config) {
