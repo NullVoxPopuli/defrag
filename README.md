@@ -45,13 +45,32 @@ Example `.defragrc.yaml`
 # to an exact version.
 #
 # Possible values:
-#  pinned
-#  patches
-#  minors
-write-as: pinned
+#  pinned ( default )
+#  patches ( e.g.:  ~1.0.0 )
+#  minors ( e.g.: ^1.0.0 )
+write-as: pinned 
 
-# Default assumes every package follows semver and
-# is 100% safe to upgrade within semver ranges.
+# This whole object is optional, 
+# but if your monorepo has public libraries
+# where you *need* wider ranges, that can be configured here
+# 
+# overrides is an array of objects
+overrides:
+  # path may be either a single glob or an array of glabs
+  - path: 
+    - packages/*/addon/package.json
+    - packages/*/*/package.json
+    # for both devDependencies and dependencies
+    # in addition to the 3 global options, 
+    # pinned, patches, and minors, you may also
+    # specify `false` to disable version re-writing entirely
+    # (which may be useful for some packages that do 
+    #  complex multi-version specifiers)
+    devDependencies: pinned
+    dependencies: minors 
+
+# Default assumes every package follows semver (minors) and
+# is 100% safe to upgrade within those ranges.
 #
 # in practice, this is only true if all dependencies
 # sharing those listed here do not use private APIs.

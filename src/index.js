@@ -4,7 +4,7 @@ import { cosmiconfig } from 'cosmiconfig';
 import debug from 'debug';
 import { packageJson, project } from 'ember-apply';
 
-import { injestDeps, updateManifestFor } from './utils.js';
+import { injestDeps, normalizeConfig, updateManifestFor } from './utils.js';
 
 const d = debug('defrag');
 const configExplorer = cosmiconfig('defrag');
@@ -20,12 +20,10 @@ export default async function run() {
   const projectResult = await getPackages(root);
 
   /**
-   * @type {import('./types.ts').Config}
+   * @type {import('./types.ts').UserConfig}
    */
-  const config = {
-    'write-as': 'pinned',
-    ...(configResult?.config || {}),
-  };
+  const userConfig = configResult?.config || {};
+  const config = normalizeConfig(userConfig);
 
   d(`Resolved config:`);
   d(config);

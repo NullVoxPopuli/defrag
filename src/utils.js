@@ -9,6 +9,43 @@ const DEFAULT_BUMP = '^';
 const DEPS = new Map();
 
 /**
+ * @param {Partial<import('./types.ts').UserConfig>} [ userConfig ]
+ * @return {import('./types.ts').Config}
+ */
+export function normalizeConfig(userConfig) {
+  let config = userConfig || {};
+
+  let topLevel = {
+    'write-as': config['write-as'] || 'pinned',
+  };
+
+  /** @type {import('./types.ts').Config['overrides'] } */
+  const overrides =
+    config['overrides']?.map((override) => {
+      const defaultRange = topLevel['write-as'];
+      const pathsArray = Array.isArray(override.path)
+        ? override.path
+        : [override.path];
+
+      return {
+        devDependencies: override['devDependencies'] ?? defaultRange,
+        dependencies: override['dependencies'] ?? defaultRange,
+        path: pathsArray,
+      };
+    }) || [];
+
+  return {
+    ...topLevel,
+    'update-range': {
+      '~': [],
+      '^': [],
+      ...config['update-range'],
+    },
+    overrides,
+  };
+}
+
+/**
  * @private for testing only
  *
  * @param {string} name
