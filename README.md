@@ -85,6 +85,30 @@ update-range:
     - "@ember-data/*"
 ```
 
+## pnpm catalogs
+
+[pnpm catalogs](https://pnpm.io/catalogs) declared in `pnpm-workspace.yaml` are
+supported automatically -- no extra config needed.
+
+```yaml
+catalog:
+  react: ^18.2.0
+
+catalogs:
+  legacy:
+    react: ^17.0.1
+```
+
+- The versions declared in the default `catalog` and any named `catalogs`
+  participate in de-fragmentation alongside the versions found in each
+  `package.json`.
+- Those catalog entries are re-written in place (comments and formatting are
+  preserved), using the same rules as npm `overrides`, yarn `resolutions`, and
+  `pnpm.overrides` -- i.e. the top-level config, since catalogs are
+  workspace-wide.
+- `catalog:` / `catalog:<name>` references inside a `package.json` are treated
+  as non-versions and left untouched.
+
 ## Questions
 
 ### Disable for sub-folders?
