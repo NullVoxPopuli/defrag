@@ -1,8 +1,25 @@
 {
   "solution": {
     "defrag": {
-      "oldVersion": "1.1.0"
+      "impact": "minor",
+      "oldVersion": "1.0.3",
+      "newVersion": "1.1.0",
+      "constraints": [
+        {
+          "impact": "minor",
+          "reason": "Appears in changelog section :rocket: Enhancement"
+        },
+        {
+          "impact": "patch",
+          "reason": "Appears in changelog section :memo: Documentation"
+        },
+        {
+          "impact": "patch",
+          "reason": "Appears in changelog section :house: Internal"
+        }
+      ],
+      "pkgJSONPath": "./package.json"
     }
   },
-  "description": "## Release (2026-07-14)\n\n\n\n#### :rocket: Enhancement\n* [#14](https://github.com/NullVoxPopuli/defrag/pull/14) Support pnpm catalogs ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n\n#### :bug: Bug Fix\n* [#12](https://github.com/NullVoxPopuli/defrag/pull/12) Setup/update release-plan ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n\n#### :house: Internal\n* [#15](https://github.com/NullVoxPopuli/defrag/pull/15) Ditch JS-based lint/format ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n* [#12](https://github.com/NullVoxPopuli/defrag/pull/12) Setup/update release-plan ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n* [#11](https://github.com/NullVoxPopuli/defrag/pull/11) Update pnpm and ci ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n\n#### Committers: 1\n- [@NullVoxPopuli](https://github.com/NullVoxPopuli)\n"
+  "description": "## Release (2024-01-28)\n\ndefrag 1.1.0 (minor)\n\n#### :rocket: Enhancement\n* `defrag`\n  * [#9](https://github.com/NullVoxPopuli/defrag/pull/9) Support `overrides` for specified paths (as globs) and varying ranges for devDependencies and dependencies, separately  ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n\n#### :memo: Documentation\n* `defrag`\n  * [#10](https://github.com/NullVoxPopuli/defrag/pull/10) Update README with example of how to disable defragmentation on sub-folders ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n\n#### :house: Internal\n* `defrag`\n  * [#5](https://github.com/NullVoxPopuli/defrag/pull/5) Refactor tests ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n\n#### Committers: 1\n- [@NullVoxPopuli](https://github.com/NullVoxPopuli)\n"
 }
