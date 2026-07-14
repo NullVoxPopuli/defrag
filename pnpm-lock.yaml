@@ -29,6 +29,9 @@ importers:
       semver:
         specifier: ^7.5.4
         version: 7.8.5
+      yaml:
+        specifier: ^2.9.0
+        version: 2.9.0
     devDependencies:
       '@babel/eslint-parser':
         specifier: ^7.23.3

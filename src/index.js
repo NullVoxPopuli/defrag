@@ -5,6 +5,7 @@ import debug from 'debug';
 import { packageJson, project } from 'ember-apply';
 
 import { getOverride, normalizeConfig } from './config.js';
+import { injestCatalogs, updateCatalogs } from './pnpm-workspace.js';
 import { injestDeps, updateManifestFor } from './utils.js';
 
 const d = debug('defrag');
@@ -36,6 +37,10 @@ export default async function run() {
   d(`Found ${packages.length} packages`);
   packages.forEach((p) => p && injestDeps(p.packageJson));
 
+  // pnpm catalogs live in pnpm-workspace.yaml, outside of any package.json,
+  // but the versions they declare should participate in de-fragmentation too.
+  await injestCatalogs(root);
+
   for (const pkg of packages) {
     if (!pkg) continue;
 
@@ -60,6 +65,10 @@ export default async function run() {
       updateManifestFor(manifest.pnpm?.overrides, config);
     }, pkg.dir);
   }
+
+  // pnpm catalogs are workspace-wide and only affect local development,
+  // so — like the overrides above — they always use the top-level config.
+  await updateCatalogs(root, config);
 }
 
 /**

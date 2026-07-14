@@ -53,6 +53,20 @@ describe('getVersionForConfig', () => {
     ).toBe('5.4.0-beta.1');
   });
 
+  it('leaves pnpm catalog references untouched', () => {
+    const verify = withConfig();
+
+    // The default catalog reference
+    expect(verify('react', 'catalog:', ['^18.2.0', '^18.3.0'])).toBe(
+      'catalog:',
+    );
+    // A named catalog reference. Without special handling, `clean` would
+    // coerce the `17` in `react17` into a version.
+    expect(verify('react', 'catalog:react17', ['^18.2.0', '^18.3.0'])).toBe(
+      'catalog:react17',
+    );
+  });
+
   it('restricted to ~', () => {
     const verify = withConfig(
       c({
