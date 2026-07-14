@@ -71,15 +71,21 @@ describe('pnpm catalogs', () => {
     expect(parsed.catalog.react).toBe('^18.3.1');
     expect(parsed.catalogs.legacy.react).toBe('^17.0.2');
 
-    // The stale versions must be gone (guards against append-instead-of-replace).
-    const raw = await readRaw();
+    // Structure, comments, and the untouched keys are all preserved; only the
+    // catalog versions changed.
+    expect(await readRaw()).toMatchInlineSnapshot(`
+      "packages:
+        - \\"*\\"
 
-    expect(raw).not.toContain('^18.2.0');
-    expect(raw).not.toContain('^17.0.1');
+      # Shared versions
+      catalog:
+        react: ^18.3.1
 
-    // Structure + comments are preserved.
-    expect(raw).toContain('# Shared versions');
-    expect(parsed.packages).toEqual(['*']);
+      catalogs:
+        legacy:
+          react: ^17.0.2
+      "
+    `);
   });
 
   it('bumps a catalog when a package.json uses a newer in-range version', async () => {
