@@ -75,7 +75,7 @@ describe('pnpm catalogs', () => {
     // catalog versions changed.
     expect(await readRaw()).toMatchInlineSnapshot(`
       "packages:
-        - \\"*\\"
+        - "*"
 
       # Shared versions
       catalog:
