@@ -1,4 +1,22 @@
 # Changelog
+
+## Release (2026-07-14)
+
+
+
+#### :rocket: Enhancement
+* [#14](https://github.com/NullVoxPopuli/defrag/pull/14) Support pnpm catalogs ([@NullVoxPopuli](https://github.com/NullVoxPopuli))
+
+#### :bug: Bug Fix
+* [#12](https://github.com/NullVoxPopuli/defrag/pull/12) Setup/update release-plan ([@NullVoxPopuli](https://github.com/NullVoxPopuli))
+
+#### :house: Internal
+* [#15](https://github.com/NullVoxPopuli/defrag/pull/15) Ditch JS-based lint/format ([@NullVoxPopuli](https://github.com/NullVoxPopuli))
+* [#12](https://github.com/NullVoxPopuli/defrag/pull/12) Setup/update release-plan ([@NullVoxPopuli](https://github.com/NullVoxPopuli))
+* [#11](https://github.com/NullVoxPopuli/defrag/pull/11) Update pnpm and ci ([@NullVoxPopuli](https://github.com/NullVoxPopuli))
+
+#### Committers: 1
+- [@NullVoxPopuli](https://github.com/NullVoxPopuli)
 ## Release (2024-01-28)
 
 defrag 1.1.0 (minor)
