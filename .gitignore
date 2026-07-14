@@ -1,7 +1,5 @@
 node_modules/
 .turbo/
-.eslintcache
-.prettiercache
 tsconfig.tsbuildinfo
 coverage/
 

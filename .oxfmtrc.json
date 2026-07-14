@@ -1,0 +1,13 @@
+{
+  "printWidth": 80,
+  "singleQuote": true,
+  "sortPackageJson": false,
+  "ignorePatterns": [
+    "declarations/",
+    "node_modules/",
+    "coverage/",
+    "*.md",
+    "*.yaml",
+    "*.yml"
+  ]
+}
