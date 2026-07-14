@@ -69,10 +69,7 @@
     "vitest": "^0.34.6"
   },
   "engines": {
-    "node": ">=16.0.0"
-  },
-  "volta": {
-    "node": "18.19.0"
+    "node": ">=22.11.0"
   },
   "preset": "index.js"
 }
