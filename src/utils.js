@@ -19,6 +19,16 @@ export function setDetectedDeps(name, list) {
 }
 
 /**
+ * @private for testing only
+ *
+ * Clears all detected dependency versions so tests don't leak the global
+ * `DEPS` map into one another.
+ */
+export function resetDetectedDeps() {
+  DEPS.clear();
+}
+
+/**
  *
  * @param {Record<string, string> | undefined} depSet
  * @param {import('./types.ts').ConfigForUpdate} config
