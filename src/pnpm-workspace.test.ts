@@ -6,7 +6,11 @@ import { beforeEach, describe, expect as e, it } from 'vitest';
 import { parse } from 'yaml';
 
 import { c } from './-tests/helpers.ts';
-import { injestCatalogs, updateCatalogs } from './pnpm-workspace.js';
+import {
+  getCatalogVersions,
+  injestCatalogs,
+  updateCatalogs,
+} from './pnpm-workspace.js';
 import { injestDeps, resetDetectedDeps, setDetectedDeps } from './utils.js';
 
 const expect = e.soft;
@@ -141,5 +145,67 @@ describe('pnpm catalogs', () => {
 
     // Unchanged: the out-of-range version is ignored.
     expect(parsed.catalog.lodash).toBe('^4.17.15');
+  });
+});
+
+describe('getCatalogVersions', () => {
+  let root: string;
+
+  beforeEach(async () => {
+    resetDetectedDeps();
+    root = await mkdtemp(path.join(tmpdir(), 'defrag-catalog-versions-'));
+  });
+
+  async function writeWorkspace(lines: string[]) {
+    await writeFile(
+      path.join(root, 'pnpm-workspace.yaml'),
+      lines.join('\n'),
+      'utf8',
+    );
+  }
+
+  it('is an empty map when there is no pnpm-workspace.yaml', async () => {
+    const versions = await getCatalogVersions(root, c());
+
+    expect(versions.size).toBe(0);
+  });
+
+  it('reports each catalog entry with its de-fragmented version and reference', async () => {
+    await writeWorkspace([
+      'catalog:',
+      '  react: ^18.2.0',
+      '',
+      'catalogs:',
+      '  legacy:',
+      '    react: ^17.0.1',
+      '',
+    ]);
+
+    // A package elsewhere pushes the default catalog to a newer in-range version.
+    await injestCatalogs(root);
+    setDetectedDeps('react', ['^18.2.0', '^18.3.1', '^17.0.1', '^17.0.2']);
+
+    const versions = await getCatalogVersions(
+      root,
+      c({ 'write-as': 'minors' }),
+    );
+    const react = versions.get('react') ?? [];
+
+    // The default catalog resolves to the highest in-range version ...
+    expect(react).toContainEqual({
+      ref: 'catalog:',
+      version: '^18.3.1',
+      range: '^18.2.0',
+      isDefault: true,
+      order: 0,
+    });
+    // ... and the named catalog to the highest in *its* range.
+    expect(react).toContainEqual({
+      ref: 'catalog:legacy',
+      version: '^17.0.2',
+      range: '^17.0.1',
+      isDefault: false,
+      order: 1,
+    });
   });
 });

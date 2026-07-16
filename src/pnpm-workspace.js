@@ -83,6 +83,68 @@ function keyPathFor(label) {
 }
 
 /**
+ * @param {string} label the catalog key-path (`catalog` or `catalogs.<name>`)
+ * @returns {string} the reference a package.json uses: `catalog:` (default) or
+ *   `catalog:<name>` (named)
+ */
+function refFor(label) {
+  if (label === 'catalog') {
+    return 'catalog:';
+  }
+
+  return `catalog:${label.slice('catalogs.'.length)}`;
+}
+
+/**
+ * Collects, for every dependency declared in any pnpm catalog, its
+ * de-fragmented version alongside the reference a package.json would use to
+ * point at it. This lets each package.json dependency be swapped to a
+ * `catalog:` reference when its own de-fragmented version is an exact match.
+ *
+ * Returns an empty map when there is no pnpm-workspace.yaml (so callers can
+ * treat "no catalogs" and "catalogs but no matches" identically).
+ *
+ * @param {string} root the monorepo root
+ * @param {import('./types.ts').ConfigForUpdate} config the top-level config;
+ *   catalogs are workspace-wide, so they never use per-package overrides
+ * @returns {Promise<import('./types.ts').CatalogVersions>}
+ */
+export async function getCatalogVersions(root, config) {
+  /** @type {import('./types.ts').CatalogVersions} */
+  let result = new Map();
+
+  let workspace = await readWorkspace(root);
+
+  if (!workspace) {
+    return result;
+  }
+
+  let catalogs = catalogsFromDoc(workspace.doc);
+  let order = 0;
+
+  for (let [label, catalog] of Object.entries(catalogs)) {
+    let ref = refFor(label);
+    let isDefault = label === 'catalog';
+
+    for (let [dep, currentVersion] of Object.entries(catalog)) {
+      let version = getVersionForConfig(dep, currentVersion, config);
+      let entries = result.get(dep) || [];
+
+      entries.push({
+        ref,
+        version,
+        range: currentVersion,
+        isDefault,
+        order: order++,
+      });
+      result.set(dep, entries);
+    }
+  }
+
+  return result;
+}
+
+/**
  * Collects the versions declared in every pnpm catalog so they participate in
  * de-fragmentation alongside the versions found in each package.json.
  *

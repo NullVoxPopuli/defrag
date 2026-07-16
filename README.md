@@ -109,6 +109,40 @@ catalogs:
 - `catalog:` / `catalog:<name>` references inside a `package.json` are treated
   as non-versions and left untouched.
 
+### Swapping package.json versions to `catalog:`
+
+When catalogs are present, `defrag` also propagates them: after a
+`package.json` dependency has been de-fragmented, if its resulting version is an
+**exact match** for a catalog entry, the plain version is swapped out for the
+catalog reference.
+
+```yaml
+# pnpm-workspace.yaml
+catalog:
+  react: ^18.3.1
+```
+
+```jsonc
+// packages/app/package.json (before)
+{ "dependencies": { "react": "^18.2.0" } }
+
+// after -- ^18.2.0 de-frags to ^18.3.1, which matches the catalog exactly
+{ "dependencies": { "react": "catalog:" } }
+```
+
+- The swap is only made on an exact match of the de-fragmented versions, so
+  adopting the catalog never widens or narrows what the package accepts. A
+  version that is merely *in range* (but not identical) is left as a plain
+  version.
+- When more than one catalog declares the dependency at that same version, the
+  catalog with the narrowest range wins (ties fall back to the default
+  `catalog:`, then declaration order). Named catalogs are written as
+  `catalog:<name>`.
+- This happens automatically whenever a `pnpm-workspace.yaml` with catalogs is
+  detected -- no extra config needed. Dependency collections disabled via an
+  `overrides` entry (`dependencies: false` / `devDependencies: false`) are left
+  untouched, catalog swap included.
+
 ## Questions
 
 ### Disable for sub-folders?
