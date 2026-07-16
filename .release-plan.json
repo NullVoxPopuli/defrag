@@ -1,30 +1,18 @@
 {
   "solution": {
     "defrag": {
-      "impact": "major",
-      "oldVersion": "1.1.0",
-      "newVersion": "2.0.0",
+      "impact": "minor",
+      "oldVersion": "2.0.0",
+      "newVersion": "2.1.0",
       "tagName": "latest",
       "constraints": [
         {
-          "impact": "major",
-          "reason": "Appears in changelog section :boom: Breaking Change"
-        },
-        {
           "impact": "minor",
           "reason": "Appears in changelog section :rocket: Enhancement"
-        },
-        {
-          "impact": "patch",
-          "reason": "Appears in changelog section :bug: Bug Fix"
-        },
-        {
-          "impact": "patch",
-          "reason": "Appears in changelog section :house: Internal"
         }
       ],
       "pkgJSONPath": "./package.json"
     }
   },
-  "description": "## Release (2026-07-14)\n\n* defrag 2.0.0 (major)\n\n#### :boom: Breaking Change\n* `defrag`\n  * [#11](https://github.com/NullVoxPopuli/defrag/pull/11) Update pnpm and ci ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n\n#### :rocket: Enhancement\n* `defrag`\n  * [#14](https://github.com/NullVoxPopuli/defrag/pull/14) Support pnpm catalogs ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n\n#### :bug: Bug Fix\n* `defrag`\n  * [#12](https://github.com/NullVoxPopuli/defrag/pull/12) Setup/update release-plan ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n\n#### :house: Internal\n* `defrag`\n  * [#19](https://github.com/NullVoxPopuli/defrag/pull/19) Update all dependencies ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n  * [#20](https://github.com/NullVoxPopuli/defrag/pull/20) Change workspace packages to current directory only ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n  * [#17](https://github.com/NullVoxPopuli/defrag/pull/17) Add LICENSE ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n  * [#16](https://github.com/NullVoxPopuli/defrag/pull/16) Revert \"Prepare Release vnull\" ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n  * [#13](https://github.com/NullVoxPopuli/defrag/pull/13) Prepare Release vnull ([@github-actions[bot]](https://github.com/apps/github-actions))\n  * [#15](https://github.com/NullVoxPopuli/defrag/pull/15) Ditch JS-based lint/format ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n  * [#12](https://github.com/NullVoxPopuli/defrag/pull/12) Setup/update release-plan ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n  * [#11](https://github.com/NullVoxPopuli/defrag/pull/11) Update pnpm and ci ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n\n#### Committers: 2\n- GitHub Actions [Bot] ([@github-actions](https://github.com/apps/github-actions))\n- [@NullVoxPopuli](https://github.com/NullVoxPopuli)\n"
+  "description": "## Release (2026-07-16)\n\n* defrag 2.1.0 (minor)\n\n#### :rocket: Enhancement\n* `defrag`\n  * [#21](https://github.com/NullVoxPopuli/defrag/pull/21) Automatically update with catalogs ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n\n#### Committers: 1\n- [@NullVoxPopuli](https://github.com/NullVoxPopuli)\n"
 }

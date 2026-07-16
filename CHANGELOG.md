@@ -1,5 +1,16 @@
 # Changelog
 
+## Release (2026-07-16)
+
+* defrag 2.1.0 (minor)
+
+#### :rocket: Enhancement
+* `defrag`
+  * [#21](https://github.com/NullVoxPopuli/defrag/pull/21) Automatically update with catalogs ([@NullVoxPopuli](https://github.com/NullVoxPopuli))
+
+#### Committers: 1
+- [@NullVoxPopuli](https://github.com/NullVoxPopuli)
+
 ## Release (2026-07-14)
 
 * defrag 2.0.0 (major)
