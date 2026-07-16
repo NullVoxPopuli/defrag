@@ -32,14 +32,90 @@ export function resetDetectedDeps() {
  *
  * @param {Record<string, string> | undefined} depSet
  * @param {import('./types.ts').ConfigForUpdate} config
+ * @param {import('./types.ts').CatalogVersions} [catalogs] when provided, a
+ *   dependency whose de-fragmented version exactly matches a catalog entry is
+ *   swapped to that catalog's reference (`catalog:` / `catalog:<name>`) instead
+ *   of being written as a plain version. Only pass this for `dependencies` and
+ *   `devDependencies` -- npm/yarn/pnpm overrides can't use `catalog:`.
  */
-export function updateManifestFor(depSet, config) {
+export function updateManifestFor(depSet, config, catalogs) {
   if (depSet) {
     for (let [dep, currentVersion] of Object.entries(depSet)) {
       let newVersion = getVersionForConfig(dep, currentVersion, config);
+      let ref = catalogs ? catalogRefFor(dep, newVersion, catalogs) : null;
 
-      depSet[dep] = newVersion;
+      depSet[dep] = ref ?? newVersion;
     }
+  }
+}
+
+/**
+ * Decides whether a package.json dependency can be swapped to a pnpm catalog
+ * reference. A swap is only made on an *exact match*: the dependency's
+ * de-fragmented version must be identical to the catalog entry's de-fragmented
+ * version, so adopting the catalog never widens or narrows what the package
+ * accepts.
+ *
+ * When more than one catalog declares the dependency at that same version, the
+ * catalog with the narrowest original range wins; ties fall back to the default
+ * catalog, then declaration order.
+ *
+ * @param {string} dep
+ * @param {string} finalVersion the dependency's de-fragmented version
+ * @param {import('./types.ts').CatalogVersions} catalogs
+ * @returns {string | null} the catalog reference to write, or null for no swap
+ */
+export function catalogRefFor(dep, finalVersion, catalogs) {
+  // A dependency that is already a catalog reference (or any non-version) never
+  // equals a real, de-fragmented catalog version, so it is left untouched.
+  let entries = catalogs.get(dep);
+
+  if (!entries) {
+    return null;
+  }
+
+  let matches = entries.filter((entry) => entry.version === finalVersion);
+
+  let [best] = matches.sort(compareCatalogNarrowness);
+
+  return best?.ref ?? null;
+}
+
+/**
+ * Orders matching catalog entries so the "best" one sorts first: narrowest
+ * original range, then the default catalog, then earliest declaration order.
+ *
+ * @param {import('./types.ts').CatalogEntry} a
+ * @param {import('./types.ts').CatalogEntry} b
+ */
+function compareCatalogNarrowness(a, b) {
+  let aInB = safeSubset(a.range, b.range);
+  let bInA = safeSubset(b.range, a.range);
+
+  // The strictly-narrower range (a subset of the other, but not vice-versa)
+  // fits the version most tightly.
+  if (aInB && !bInA) return -1;
+  if (bInA && !aInB) return 1;
+
+  if (a.isDefault !== b.isDefault) {
+    return a.isDefault ? -1 : 1;
+  }
+
+  return a.order - b.order;
+}
+
+/**
+ * `semver.subset`, but tolerant of ranges it can't parse (treated as not a
+ * subset) so an exotic catalog range can never throw here.
+ *
+ * @param {string} sub
+ * @param {string} dom
+ */
+function safeSubset(sub, dom) {
+  try {
+    return semver.subset(sub, dom);
+  } catch {
+    return false;
   }
 }
 

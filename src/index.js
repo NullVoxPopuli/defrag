@@ -5,7 +5,11 @@ import debug from 'debug';
 import { packageJson, project } from 'ember-apply';
 
 import { getOverride, normalizeConfig } from './config.js';
-import { injestCatalogs, updateCatalogs } from './pnpm-workspace.js';
+import {
+  getCatalogVersions,
+  injestCatalogs,
+  updateCatalogs,
+} from './pnpm-workspace.js';
 import { injestDeps, updateManifestFor } from './utils.js';
 
 const d = debug('defrag');
@@ -41,6 +45,12 @@ export default async function run() {
   // but the versions they declare should participate in de-fragmentation too.
   await injestCatalogs(root);
 
+  // The de-fragmented version each catalog will settle on. A package.json
+  // dependency whose own de-fragmented version matches one of these exactly is
+  // swapped to the catalog reference (`catalog:` / `catalog:<name>`) below.
+  // Catalogs are workspace-wide, so they always use the top-level config.
+  const catalogs = await getCatalogVersions(root, config);
+
   for (const pkg of packages) {
     if (!pkg) continue;
 
@@ -48,8 +58,8 @@ export default async function run() {
 
     await packageJson.modify((manifest) => {
       // These have configurable overrides in .defragrc.yml
-      update(manifest, pkg.relativeDir, config, 'devDependencies');
-      update(manifest, pkg.relativeDir, config, 'dependencies');
+      update(manifest, pkg.relativeDir, config, 'devDependencies', catalogs);
+      update(manifest, pkg.relativeDir, config, 'dependencies', catalogs);
 
       // These don't have configurable overrides as they
       // *are* the overrides for the whole repo
@@ -76,12 +86,13 @@ export default async function run() {
  * @param {string} relativePath
  * @param {import('./types.ts').Config} config
  * @param {'devDependencies' | 'dependencies'} collection
+ * @param {import('./types.ts').CatalogVersions} catalogs
  */
-function update(manifest, relativePath, config, collection) {
+function update(manifest, relativePath, config, collection, catalogs) {
   let override = getOverride(relativePath, config);
 
   if (!override) {
-    return updateManifestFor(manifest[collection], config);
+    return updateManifestFor(manifest[collection], config, catalogs);
   }
 
   let collectionConfig = override[collection];
@@ -92,8 +103,12 @@ function update(manifest, relativePath, config, collection) {
 
   let writeAs = collectionConfig ?? config['write-as'];
 
-  updateManifestFor(manifest[collection], {
-    'write-as': writeAs,
-    'update-range': config['update-range'],
-  });
+  updateManifestFor(
+    manifest[collection],
+    {
+      'write-as': writeAs,
+      'update-range': config['update-range'],
+    },
+    catalogs,
+  );
 }
