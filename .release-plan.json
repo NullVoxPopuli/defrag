@@ -2,8 +2,8 @@
   "solution": {
     "defrag": {
       "impact": "minor",
-      "oldVersion": "2.0.0",
-      "newVersion": "2.1.0",
+      "oldVersion": "2.1.0",
+      "newVersion": "2.2.0",
       "tagName": "latest",
       "constraints": [
         {
@@ -14,5 +14,5 @@
       "pkgJSONPath": "./package.json"
     }
   },
-  "description": "## Release (2026-07-16)\n\n* defrag 2.1.0 (minor)\n\n#### :rocket: Enhancement\n* `defrag`\n  * [#21](https://github.com/NullVoxPopuli/defrag/pull/21) Automatically update with catalogs ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n\n#### Committers: 1\n- [@NullVoxPopuli](https://github.com/NullVoxPopuli)\n"
+  "description": "## Release (2026-09-15)\n\n* defrag 2.2.0 (minor)\n\n#### :rocket: Enhancement\n* `defrag`\n  * [#23](https://github.com/NullVoxPopuli/defrag/pull/23) Support aliased packages (npm:<name>@<range>) ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n\n#### Committers: 1\n- [@NullVoxPopuli](https://github.com/NullVoxPopuli)\n"
 }

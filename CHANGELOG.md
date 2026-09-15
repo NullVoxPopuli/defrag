@@ -1,5 +1,16 @@
 # Changelog
 
+## Release (2026-09-15)
+
+* defrag 2.2.0 (minor)
+
+#### :rocket: Enhancement
+* `defrag`
+  * [#23](https://github.com/NullVoxPopuli/defrag/pull/23) Support aliased packages (npm:<name>@<range>) ([@NullVoxPopuli](https://github.com/NullVoxPopuli))
+
+#### Committers: 1
+- [@NullVoxPopuli](https://github.com/NullVoxPopuli)
+
 ## Release (2026-07-16)
 
 * defrag 2.1.0 (minor)
