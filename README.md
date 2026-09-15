@@ -143,6 +143,34 @@ catalog:
   `overrides` entry (`dependencies: false` / `devDependencies: false`) are left
   untouched, catalog swap included.
 
+## Aliased packages (`npm:`)
+
+Dependencies that use the [`npm:` alias protocol](https://docs.npmjs.com/cli/v10/using-npm/package-spec#aliases)
+are supported automatically -- in `package.json` and in pnpm catalogs.
+
+```jsonc
+{
+  "devDependencies": {
+    "typescript-7": "npm:typescript@7.1.0-dev.20260904.1",
+    "ember-scoped-css-v2": "npm:ember-scoped-css@2.0.4"
+  }
+}
+```
+
+- De-fragmentation is keyed on the **user-defined name** (`typescript-7`), not
+  the real package (`typescript`). Every `typescript-7` across the repo is
+  brought in line with every other `typescript-7`, and a plain `typescript`
+  dependency elsewhere is unaffected -- they are different things.
+- Only the range after the `@` is de-fragmented and re-written per `write-as`;
+  the `npm:<real-package>@` prefix is kept so the alias keeps pointing at the
+  same package. Scoped packages (`npm:@scope/pkg@^1.0.0`) work too.
+- An aliased catalog entry (`typescript-7: npm:typescript@7.1.0`) is bumped by
+  aliased `package.json` entries with the same key, and a `package.json` alias
+  whose de-fragmented value exactly matches it is swapped to `catalog:` like
+  any other dependency. An alias to a *different* real package never matches.
+- An alias without a version (`npm:foo`) is treated as a non-version and left
+  untouched.
+
 ## Questions
 
 ### Disable for sub-folders?

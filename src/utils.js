@@ -4,6 +4,7 @@ import { minimatch } from 'minimatch';
 import semver from 'semver';
 
 const DEFAULT_BUMP = '^';
+const ALIAS_PREFIX = 'npm:';
 
 /** @type {Map<string, Set<string>>} */
 const DEPS = new Map();
@@ -120,12 +121,76 @@ function safeSubset(sub, dom) {
 }
 
 /**
+ * Splits an npm alias into the real package it points at and the range it
+ * requests:
+ *
+ * - `npm:typescript@7.1.0` -> `{ name: 'typescript', range: '7.1.0' }`
+ * - `npm:@scope/pkg@^1.0.0` -> `{ name: '@scope/pkg', range: '^1.0.0' }`
+ *
+ * The key in package.json (e.g. `typescript-7`) is user-defined, and that key is
+ * what de-fragmentation is keyed on -- the alias only tells us which real
+ * package and version it resolves to.
+ *
+ * @param {string} version
+ * @returns {{ name: string, range: string } | null} null when `version` is not
+ *   an alias, or is an alias without a version (`npm:foo`), which is left alone
+ *   like any other non-version.
+ */
+export function parseAlias(version) {
+  if (!version.startsWith(ALIAS_PREFIX)) {
+    return null;
+  }
+
+  let spec = version.slice(ALIAS_PREFIX.length);
+  // Start at 1 so the leading `@` of a scoped package isn't mistaken for the
+  // separator between the name and the range.
+  let at = spec.indexOf('@', 1);
+
+  if (at === -1) {
+    return null;
+  }
+
+  let name = spec.slice(0, at);
+  let range = spec.slice(at + 1);
+
+  if (!name || !range) {
+    return null;
+  }
+
+  return { name, range };
+}
+
+/**
+ * Inverse of `parseAlias`
+ *
+ * @param {string} name the real package the alias points at
+ * @param {string} range
+ */
+export function formatAlias(name, range) {
+  return `${ALIAS_PREFIX}${name}@${range}`;
+}
+
+/**
  *
  * @param {string} dep
  * @param {string} currentVersion
- * @param {import('./types.ts').ConfigForUpdate} config
+ *  @param {import('./types.ts').ConfigForUpdate} config
+ * @returns {string}
  */
 export function getVersionForConfig(dep, currentVersion, config) {
+  // npm:<real-package>@<range>
+  //
+  // De-fragment the range under the user-defined key, then put the alias back
+  // so the dependency keeps pointing at the same real package.
+  let alias = parseAlias(currentVersion);
+
+  if (alias) {
+    return formatAlias(
+      alias.name,
+      getVersionForConfig(dep, alias.range, config),
+    );
+  }
+
   let versions = DEPS.get(dep);
 
   if (!versions) {
@@ -167,6 +232,10 @@ function isNonVersion(version) {
     // These point at a version declared in pnpm-workspace.yaml rather than
     // being a version themselves.
     version.startsWith('catalog:') ||
+    // npm aliases *with* a version (`npm:typescript@7.1.0`) are unwrapped by
+    // `parseAlias` before we get here. Anything still starting with `npm:` is
+    // an alias without a version (`npm:foo`), which we can't do anything with.
+    version.startsWith(ALIAS_PREFIX) ||
     version.startsWith('github:') ||
     version.includes('/') ||
     version.includes('://')
@@ -194,8 +263,15 @@ export function clean(version) {
  *
  * @param {string} version
  * @param {import('./types.ts').ConfigForUpdate} config
+ * @returns {string}
  */
 export function toWrittenVersion(version, config) {
+  let alias = parseAlias(version);
+
+  if (alias) {
+    return formatAlias(alias.name, toWrittenVersion(alias.range, config));
+  }
+
   if (isNonVersion(version)) {
     return version;
   }
@@ -261,11 +337,20 @@ export function getBumpStrategy(dep, config) {
  * @param {string} version
  */
 function maybeAdd(dep, version) {
+  // Aliases (`npm:typescript@7.1.0`) contribute their range under the
+  // user-defined key, e.g. `typescript-7`, not under the real package name.
+  let alias = parseAlias(version);
+
+  if (alias) {
+    version = alias.range;
+  }
+
   // We can't do anything about "invalid versions", so we'll ignore them.
   // These include:
   // - file/github/git/etc protocol
   // - workspaces
   // - pnpm catalog references
+  // - npm aliases without a version
   // - https URLs
   if (isNonVersion(version)) {
     return;
