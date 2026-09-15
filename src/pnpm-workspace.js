@@ -6,7 +6,7 @@ import path from 'node:path';
 import debug from 'debug';
 import { parseDocument } from 'yaml';
 
-import { getVersionForConfig, injestCatalog } from './utils.js';
+import { getVersionForConfig, injestCatalog, parseAlias } from './utils.js';
 
 const d = debug('defrag');
 
@@ -133,7 +133,9 @@ export async function getCatalogVersions(root, config) {
       entries.push({
         ref,
         version,
-        range: currentVersion,
+        // For an alias (`npm:typescript@^7.1.0`) the comparable range is the
+        // part after the `@`; the alias itself is already part of `version`.
+        range: parseAlias(currentVersion)?.range ?? currentVersion,
         isDefault,
         order: order++,
       });

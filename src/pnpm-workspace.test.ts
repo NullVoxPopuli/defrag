@@ -128,6 +128,54 @@ describe('pnpm catalogs', () => {
     expect(parsed.catalog.lodash).toBe('^4.17.20');
   });
 
+  it('bumps an aliased catalog entry from an aliased package.json dependency, keeping the alias', async () => {
+    await writeWorkspace([
+      'catalog:',
+      '  typescript-7: npm:typescript@7.1.0-dev.20260901.1',
+      '',
+    ]);
+
+    await injestCatalogs(root);
+    injestDeps({
+      name: 'a',
+      version: '1.0.0',
+      devDependencies: {
+        'typescript-7': 'npm:typescript@7.1.0-dev.20260904.1',
+      },
+    });
+
+    await updateCatalogs(root, c());
+
+    const parsed = await readParsed();
+
+    expect(parsed.catalog['typescript-7']).toBe(
+      'npm:typescript@7.1.0-dev.20260904.1',
+    );
+  });
+
+  it('does not bump an aliased catalog entry from the real package name', async () => {
+    await writeWorkspace([
+      'catalog:',
+      '  typescript-7: npm:typescript@7.1.0',
+      '',
+    ]);
+
+    await injestCatalogs(root);
+    // A plain `typescript` dependency is a different key from `typescript-7`,
+    // even though the alias resolves to the same real package.
+    injestDeps({
+      name: 'a',
+      version: '1.0.0',
+      devDependencies: { typescript: '7.2.0' },
+    });
+
+    await updateCatalogs(root, c());
+
+    const parsed = await readParsed();
+
+    expect(parsed.catalog['typescript-7']).toBe('npm:typescript@7.1.0');
+  });
+
   it('does not bump a catalog past its configured range', async () => {
     await writeWorkspace(['catalog:', '  lodash: ^4.17.15', '']);
 
@@ -168,6 +216,31 @@ describe('getCatalogVersions', () => {
     const versions = await getCatalogVersions(root, c());
 
     expect(versions.size).toBe(0);
+  });
+
+  it('reports an aliased entry with the alias in its version and the bare range', async () => {
+    await writeWorkspace([
+      'catalog:',
+      '  typescript-7: npm:typescript@^7.0.0',
+      '',
+    ]);
+
+    await injestCatalogs(root);
+    setDetectedDeps('typescript-7', ['npm:typescript@7.1.0']);
+
+    const versions = await getCatalogVersions(root, c());
+
+    expect(versions.get('typescript-7')).toEqual([
+      {
+        ref: 'catalog:',
+        // what a matching package.json dependency would be written as
+        version: 'npm:typescript@7.1.0',
+        // the comparable range, without the alias prefix
+        range: '^7.0.0',
+        isDefault: true,
+        order: 0,
+      },
+    ]);
   });
 
   it('reports each catalog entry with its de-fragmented version and reference', async () => {

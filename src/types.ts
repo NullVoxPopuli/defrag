@@ -15,7 +15,10 @@ export interface CatalogEntry {
   ref: string;
   /** the catalog's de-fragmented version, compared for an exact match */
   version: string;
-  /** the catalog's original range, used to pick the narrowest match */
+  /**
+   * the catalog's original range, used to pick the narrowest match. For an npm
+   * alias (`npm:<name>@<range>`) this is just the `<range>` part.
+   */
   range: string;
   /** whether this is the default (unnamed) catalog */
   isDefault: boolean;
